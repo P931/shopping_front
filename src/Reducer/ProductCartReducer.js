@@ -118,24 +118,6 @@ const ProductReducer = (state = initial, action) => {
 
     case INCRE_PRODUCT_QUANTITY_SUCCESS:
 
-      // for Product quantity...
-
-      // return {
-
-      //   ...state,
-
-      //   Product: state.Product?.productData?.map((product) => {
-
-      //     return product._id === action.payload._id
-
-      //       ? { ...product, ProductQuantity: product.ProductQuantity + 1 }
-
-      //       : product
-      //   }),
-
-      //   error: null
-      // };
-
       let increCartQuantity = [];
       let updatedTotalPrice = state.TotalPrice;
 
@@ -177,21 +159,6 @@ const ProductReducer = (state = initial, action) => {
 
 
     case DECRE_PRODUCT_QUANTITY_SUCCESS:
-
-      // return {
-      //   ...state,
-
-      //   Product: state.Product?.productData?.map((product) => {
-
-      //     return product._id === action.payload._id
-
-      //       ? { ...product, ProductQuantity: Math.max(0, product.ProductQuantity - 1) }
-
-      //       : product
-      //   }),
-
-      //   error: null
-      // };
 
 
       let decreCartQuantity = [];
