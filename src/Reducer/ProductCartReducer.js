@@ -12,7 +12,11 @@ import {
   INCRE_PRODUCT_QUANTITY_ERROR,
 
   DECRE_PRODUCT_QUANTITY_SUCCESS,
-  DECRE_PRODUCT_QUANTITY_ERROR
+  DECRE_PRODUCT_QUANTITY_ERROR,
+
+
+  DELETE_PRODUCT_ITEM,
+  DELETE_PRODUCT_ITEM_ERROR,
 
 } from "../action/productAction";
 
@@ -193,6 +197,33 @@ const ProductReducer = (state = initial, action) => {
       };
 
     case DECRE_PRODUCT_QUANTITY_ERROR:
+
+      return {
+        ...state,
+        error: action.message
+      };
+
+
+    case DELETE_PRODUCT_ITEM:
+
+      let newCart = state.cart.filter(item => item._id !== action.payload._id)
+
+      // let newTotalPrice = newCart.reduce((total, item) => total + (item.ProductQuantity * item.TotalPrice), 0)
+      let newTotalPrice = newCart.reduce((total, item) => total + (item.ProductQuantity * item.ProductPrice), 0)
+
+      return {
+
+        ...state,
+
+        cart: newCart,
+
+        TotalPrice: newTotalPrice,
+
+        error: null
+
+      };
+
+    case DELETE_PRODUCT_ITEM_ERROR:
 
       return {
         ...state,

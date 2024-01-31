@@ -17,6 +17,9 @@ export const INCRE_PRODUCT_QUANTITY_ERROR = "INCRE_PRODUCT_QUANTITY_ERROR";
 export const DECRE_PRODUCT_QUANTITY_SUCCESS = "DECRE_PRODUCT_QUANTITY_SUCCESS";
 export const DECRE_PRODUCT_QUANTITY_ERROR = "DECRE_PRODUCT_QUANTITY_ERROR";
 
+export const DELETE_PRODUCT_ITEM = "DELETE_PRODUCT_ITEM";
+export const DELETE_PRODUCT_ITEM_ERROR = "DELETE_PRODUCT_ITEM_ERROR";
+
 
 export const createProduct = (product) => async (dispatch) => {
 
@@ -113,6 +116,27 @@ export const decreaseProductQuantity = (productId) => async (dispatch) => {
   } catch (error) {
 
     dispatch({ type: DECRE_PRODUCT_QUANTITY_ERROR, message: error.message });
+
+    return error.message;
+
+  }
+
+};
+
+
+export const deleteProductItem = (productId) => async (dispatch) => {
+
+  try {
+
+    const response = await axios.delete(`${BASE_URL}/deleteProduct/${productId}`);
+
+    dispatch({ type: DELETE_PRODUCT_ITEM, payload: response?.data });
+
+    return response;
+
+  } catch (error) {
+
+    dispatch({ type: DELETE_PRODUCT_ITEM_ERROR, message: error.message });
 
     return error.message;
 

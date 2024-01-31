@@ -6,14 +6,15 @@ import {
   Button,
 
 } from "@mui/material";
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { useSelector, useDispatch, connect } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { makeStyles } from '@mui/styles';
 import { BASE_URL } from "../services/Helper";
-import { addToProductCart, increaseProductQuantity, decreaseProductQuantity, getAllProductDetails } from "../action/productAction";
+import { addToProductCart, increaseProductQuantity, decreaseProductQuantity, getAllProductDetails, deleteProductItem } from "../action/productAction";
 import Navbar from "./Navbar";
+import { HelpOutline } from "@mui/icons-material";
 
 
 const useStyles = makeStyles({
@@ -165,7 +166,7 @@ const useStyles = makeStyles({
 
 })
 
-const Addcart = ({ Cart, TotalPrice, increaseProductQuantity, decreaseProductQuantity, getAllProductDetails }) => {
+const Addcart = ({ Cart, TotalPrice, increaseProductQuantity, decreaseProductQuantity, getAllProductDetails, deleteProductItem }) => {
 
   const classes = useStyles();
 
@@ -197,6 +198,7 @@ const Addcart = ({ Cart, TotalPrice, increaseProductQuantity, decreaseProductQua
       console.log("error handleRemoveItemandDecrequan is :- ", error);
     }
   };
+
 
   if (Cart.length > 0)
     return (
@@ -325,6 +327,7 @@ const mapDispatchToProps = {
   addToProductCart,
   increaseProductQuantity,
   decreaseProductQuantity,
+  deleteProductItem,
   getAllProductDetails,
 };
 
