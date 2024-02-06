@@ -20,6 +20,11 @@ import loader from "../assest/loader.svg";
 import { BASE_URL } from '../services/Helper';
 import { createProduct, getAllProductDetails } from "../action/productAction";
 
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+
 const useStyles = makeStyles({
 
   userShoppingCart: {
@@ -206,12 +211,20 @@ const Cart = ({ productCart, setProductData, getAllProductDetails, createProduct
   const [userProductImgValidation, setUserProductImgValidation] = useState(false)
 
 
+  // create date
+  const [employeeSelectApplyFromDate, setEmployeeSelectApplyFromDate] = useState(null);
+  const [openEmployeeApplyFromDatePicker, setOpenEmployeeApplyFromDatePicker] = useState(false);
+  const [employeeApplyFromDateValidation, setEmployeeApplyFromDateValidation] = useState(false)
+
+
   const [userProductDetail, setUserProductDetail] = useState({
     ProductName: "",
-    ProductPrice: "",
     ProductQuantity: "",
+    ProductPrice: "",
+    ProductSize: "",
+    ProductColor: "",
     ProductImage: null,
-    ProductDescription: "",
+    ProductCreated: "",
   })
 
   const [userProductDetailValidation, setUserProductDetailValidation] = useState(false)
@@ -250,15 +263,26 @@ const Cart = ({ productCart, setProductData, getAllProductDetails, createProduct
 
     setUserProductDetail({
       ProductName: "",
-      ProductPrice: "",
       ProductQuantity: "",
+      ProductPrice: "",
+      ProductSize: "",
+      ProductColor: "",
       ProductImage: null,
-      ProductDescription: "",
+      ProductCreated: "",
     })
 
     setUserProductImg()
 
     setUserProductDetailValidation(false)
+  }
+
+
+  const handlerEmployeeSelectApplyFromDate = (newValue) => {
+
+    setEmployeeSelectApplyFromDate(newValue)
+
+    // starting date picker valdiation
+    setEmployeeApplyFromDateValidation(true)
   }
 
   const handleUserProductCloseDialogBox = () => {
@@ -273,10 +297,12 @@ const Cart = ({ productCart, setProductData, getAllProductDetails, createProduct
 
       const formData = new FormData()
       formData.append('ProductName', userProductDetail.ProductName);
+      formData.append('ProductSize', userProductDetail.ProductSize);
+      formData.append('ProductColor', userProductDetail.ProductColor);
+      formData.append('ProductImage', userProductDetail.ProductImage);
       formData.append('ProductQuantity', userProductDetail.ProductQuantity);
       formData.append('ProductPrice', userProductDetail.ProductPrice);
-      formData.append('ProductImage', userProductDetail.ProductImage);
-      formData.append('ProductDescription', userProductDetail.ProductDescription);
+      // formData.append('ProductDescription', userProductDetail.ProductDescription);
 
       const config = {
         headers: {
@@ -285,9 +311,10 @@ const Cart = ({ productCart, setProductData, getAllProductDetails, createProduct
         }
       }
 
-      if (userProductDetail.ProductName !== "" && userProductDetail.ProductQuantity !== "" &&
-        userProductDetail.ProductPrice !== "" && userProductDetail.ProductImage !== null && userProductImg &&
-        userProductDetail.ProductDescription !== ""
+      if (userProductDetail.ProductName !== "" && userProductDetail.ProductSize !== "" && userProductDetail.ProductQuantity !== "" &&
+        userProductDetail.ProductColor !== "" && userProductDetail.ProductImage !== null && userProductImg &&
+        userProductDetail.ProductPrice !== ""
+        // userProductDetail.ProductDescription !== ""
       ) {
 
         // const res = createProduct(formData)
@@ -303,16 +330,20 @@ const Cart = ({ productCart, setProductData, getAllProductDetails, createProduct
 
           setUserProductDetail({
             ProductName: "",
-            ProductPrice: "",
             ProductQuantity: "",
+            ProductPrice: "",
+            ProductSize: "",
+            ProductColor: "",
             ProductImage: null,
-            ProductDescription: "",
+            ProductCreated: "",
           })
 
           setUserProductImg()
 
           setUserAddNewProductCart(false)
           setUserProductDetailValidation(false)
+
+          setEmployeeApplyFromDateValidation(false)
 
         } else {
 
@@ -327,10 +358,12 @@ const Cart = ({ productCart, setProductData, getAllProductDetails, createProduct
 
         setUserProductDetailValidation(true)
 
+        setEmployeeApplyFromDateValidation(true)
       }
 
     } catch (error) {
       setUserProductDetailValidation(true)
+      setEmployeeApplyFromDateValidation(true)
       console.log("error handleUserProductSubmitBtn is :- ", error);
     }
   }
@@ -395,19 +428,19 @@ const Cart = ({ productCart, setProductData, getAllProductDetails, createProduct
                   <Grid>
 
                     <TextField
-                      error={userProductDetailValidation === false ? "" : !userProductDetail.ProductPrice}
-                      helperText={userProductDetailValidation === false ? "" : !userProductDetail.ProductPrice && "Please enter product price"}
+                      error={userProductDetailValidation === false ? "" : !userProductDetail.ProductSize}
+                      helperText={userProductDetailValidation === false ? "" : !userProductDetail.ProductSize && "Please enter product size"}
 
                       autoFocus
                       fullWidth
-                      label="Product Price"
+                      label="Product Size"
                       variant="standard"
 
-                      placeholder="Product Price"
-                      type="number"
+                      placeholder="Product Size"
+                      // type="number"
 
-                      name="ProductPrice"
-                      value={userProductDetail.ProductPrice}
+                      name="ProductSize"
+                      value={userProductDetail.ProductSize}
                       onChange={(e) => handleUserShoppingProductDetails(e)}
 
                     />
@@ -422,13 +455,56 @@ const Cart = ({ productCart, setProductData, getAllProductDetails, createProduct
 
                       autoFocus
                       fullWidth
-                      label="Product Quantity"
+                      label="Product quantity"
                       variant="standard"
-                      placeholder="Product Quantity"
-                      type="number"
+
+                      placeholder="Product quantity"
+                      // type="number"
 
                       name="ProductQuantity"
                       value={userProductDetail.ProductQuantity}
+                      onChange={(e) => handleUserShoppingProductDetails(e)}
+
+                    />
+
+                  </Grid>
+
+                  <Grid>
+
+                    <TextField
+                      error={userProductDetailValidation === false ? "" : !userProductDetail.ProductPrice}
+                      helperText={userProductDetailValidation === false ? "" : !userProductDetail.ProductPrice && "Please enter product price"}
+
+                      autoFocus
+                      fullWidth
+                      label="Product Price"
+                      variant="standard"
+
+                      placeholder="Product Price"
+                      // type="number"
+
+                      name="ProductPrice"
+                      value={userProductDetail.ProductPrice}
+                      onChange={(e) => handleUserShoppingProductDetails(e)}
+
+                    />
+
+                  </Grid>
+
+                  <Grid>
+
+                    <TextField
+                      error={userProductDetailValidation === false ? "" : !userProductDetail.ProductColor}
+                      helperText={userProductDetailValidation === false ? "" : !userProductDetail.ProductColor && "Please enter product color"}
+
+                      autoFocus
+                      fullWidth
+                      label="Product Color"
+                      variant="standard"
+                      placeholder="Product Color"
+
+                      name="ProductColor"
+                      value={userProductDetail.ProductColor}
                       onChange={(e) => handleUserShoppingProductDetails(e)}
 
                     />
@@ -459,21 +535,37 @@ const Cart = ({ productCart, setProductData, getAllProductDetails, createProduct
 
                   <Grid>
 
-                    <TextField
-                      error={userProductDetailValidation === false ? "" : !userProductDetail.ProductDescription}
-                      helperText={userProductDetailValidation === false ? "" : !userProductDetail.ProductDescription && "Please enter product description"}
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DemoContainer components={['DatePicker', 'DatePicker']}>
+                        <DatePicker
+                          // required
 
-                      autoFocus
-                      fullWidth
-                      label="Product Description"
-                      variant="standard"
-                      placeholder="Product Description"
+                          // onError={(newError) => setError(newError)}
 
-                      name="ProductDescription"
-                      value={userProductDetail.ProductDescription}
-                      onChange={(e) => handleUserShoppingProductDetails(e)}
+                          disablePast
+                          style={{ cursor: "pointer" }}
 
-                    />
+                          open={openEmployeeApplyFromDatePicker}
+                          onClose={() => setOpenEmployeeApplyFromDatePicker(false)}
+
+                          slotProps={{
+                            textField: {
+                              onClick: () => setOpenEmployeeApplyFromDatePicker(true),
+
+                              error: employeeApplyFromDateValidation === false ? "" : !employeeSelectApplyFromDate,
+                              helperText: employeeApplyFromDateValidation === false ? "" : !employeeSelectApplyFromDate && "Please select the from date",
+                            }
+                          }}
+                          // label="Bond Start Date"
+                          // label="dd-mm-yyyy"
+                          placeholder="dd-mm-yyyy"
+                          format="DD/MM/YYYY"
+                          value={employeeSelectApplyFromDate}
+                          onChange={(newValue) => handlerEmployeeSelectApplyFromDate(newValue)}
+
+                        />
+                      </DemoContainer>
+                    </LocalizationProvider>
 
                   </Grid>
 
